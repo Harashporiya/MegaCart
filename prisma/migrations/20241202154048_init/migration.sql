@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Fashion" ALTER COLUMN "accessorySize" DROP NOT NULL,
+ALTER COLUMN "bagSize" DROP NOT NULL,
+ALTER COLUMN "footwearSize" DROP NOT NULL,
+ALTER COLUMN "size" DROP NOT NULL;
