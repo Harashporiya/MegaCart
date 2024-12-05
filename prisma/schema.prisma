@@ -18,7 +18,6 @@ model User{
   name     String?
   email    String   @unique
   password String
-  
 }
 
 model Fashion {
@@ -33,6 +32,7 @@ model Fashion {
   price       Float
   description String
   image       String
+  
 }
 
 enum Category {
@@ -80,4 +80,47 @@ enum Size {
   XL
   XXL
   XXXL
+}
+
+model Electronic {
+  id             String              @id @default(uuid())
+  name           String
+  brand          String
+  model          String?
+  category       CategoryElectronic
+  price          Float
+  description    String
+  image          String[]
+  stockQuantity  Int                @default(0)
+  isAvailable    Boolean             @default(true)
+  processorType  String?
+  ramSize        Int?            
+  storageType    StorageType?
+  storageCapacity Int?               
+  displaySize    Float?              
+  batteryCapacity Int?              
+  warranty       Int?               
+  color          String?
+  weight         Float?              
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+
+enum CategoryElectronic {
+  Smartphones
+  Laptops
+  Tablets
+  Headphones
+  SmartWatches
+  Speakers
+  Cameras
+  Printers
+  GameConsoles
+}
+
+enum StorageType {
+  SSD
+  HDD
+  EMMC
+  NVMe
 }
