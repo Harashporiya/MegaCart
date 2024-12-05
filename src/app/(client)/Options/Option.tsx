@@ -77,6 +77,8 @@ const Options: React.FC = () => {
         <p className='Item-electronic'>Headphones</p>
         <p className='Item-electronic'>Smart Watches</p>
         <p className='Item-electronic'>Speakers</p>
+        <p className='Item-electronic'>Printers</p>
+        <p className='Item-electronic'>GameConsoles</p>
       </div>
     );
   };
