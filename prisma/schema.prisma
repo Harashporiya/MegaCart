@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id       String   @id @default(uuid())
+  name     String?
+  email    String   @unique
+  password String
+  
+}
+
+model Fashion {
+  id          String      @id @default(uuid())
+  name        String
+  brand       String
+  category    Category
+  accessorySize      AccessorySize?
+  footwearSize       FootwearSize?
+  bagSize            BagSize?
+  size        Size?
+  price       Float
+  description String
+  image       String
+}
+
+enum Category {
+  WomensClothing
+  MensClothing
+  KidsClothing
+  Accessories
+  Footwear
+  BagsAndLuggage
+}
+
+
+enum AccessorySize {
+  OneSize
+  Small
+  Medium
+  Large
+}
+
+enum FootwearSize {
+  US_6
+  US_7
+  US_8
+  US_9
+  US_10
+  US_11
+  US_12
+}
+
+enum BagSize {
+  Small
+  Medium
+  Large
+  XLarge
+  Compact
+  Weekend
+  Carry_On
+}
+
+enum Size {
+  S
+  M
+  L
+  SM
+  XL
+  XXL
+  XXXL
+}
