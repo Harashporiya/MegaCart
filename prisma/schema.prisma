@@ -32,7 +32,7 @@ model Fashion {
   price       Float
   description String
   image       String
-  
+ 
 }
 
 enum Category {
