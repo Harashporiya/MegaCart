@@ -1,0 +1,156 @@
+:root {
+    --primary-blue: rgba(30, 155, 209, 1);
+    --gray-text: rgba(132, 132, 132, 1);
+}
+  
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+.logo-container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#three-bars-logo{
+    background-color: rgba(243,249,251,255);
+    padding: 5px;
+    cursor: pointer;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+  
+.mega-mart-logo {
+    font-size: 40px;
+    color: var(--primary-blue);
+    font-weight: bold;
+    margin: 0;
+}
+  
+.search-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    margin: 0 30px;
+    align-items: center;
+    position: relative;
+}
+#search-logo{
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+#three-dot-logo{
+    position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+  
+.search-input {
+    width: 100%;
+    border: none;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px 10px 10px 50px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+  
+.search-input:focus {
+    outline: none;
+    background-color: #e0e0e0;
+}
+  
+.user-actions-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+  
+.sign-in-container, 
+.cart-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  
+.sign-button, 
+.cart-text {
+    font-size: 18px;
+    color: var(--gray-text);
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+  
+.sign-button:hover,
+.cart-text:hover {
+    color: var(--primary-blue);
+}
+#line{
+    border-left: 2px solid rgb(0, 0, 0);
+    height: 30px;
+}
+.user-sign{
+    font-weight: bold;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+.sign-in-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+  
+.user-profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+  
+.user-dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 200px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 5px 5px 10px 5px rgb(0, 0, 0);
+    z-index: 10;
+}
+  
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+  
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+  
+}
+  
+.logout-item {
+    color: red;
+}
