@@ -111,9 +111,8 @@ export async function POST(req: NextRequest) {
     console.error("Error creating electronic item:", error);
     return NextResponse.json(
       { 
-        message: "Internal Server Error", 
-        error: error instanceof Error ? error.message : "Unknown error" 
-      },
+        message: "Internal Server Error"
+     },
       { status: 500 }
     );
   }
