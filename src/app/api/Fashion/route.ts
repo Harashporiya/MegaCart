@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { writeFile } from "fs/promises";
 import path from "path";
 import fs from "fs";
@@ -97,3 +97,28 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+
+export async function GET(req: NextRequest) {
+  try {
+    
+    const getFashionData = await prisma.fashion.findMany({});
+    return NextResponse.json(
+      { 
+        message: "Fashion items retrieved successfully", 
+        items: getFashionData,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error retrieving fashion items:", error);
+    return NextResponse.json(
+      { 
+        message: "Internal Server Error", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      },
+      { status: 500 }
+    );
+  }
+}
+
