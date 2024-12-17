@@ -1,3 +1,4 @@
+"use client"
 import * as React from "react"
 import { GalleryVerticalEnd } from "lucide-react"
 
@@ -15,7 +16,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
-// This is sample data.
+
 const data = {
   navMain: [
     {
@@ -102,32 +103,33 @@ const data = {
       ],
     },
     {
-      title: "Fashion",
-      url: "#",
+      title: "Fashion Add",
+      url: "/admin/Fashionform",
       items: [
         {
           title: "Women's Clothing",
-          url: "#",
+          url: "/admin/Fashion/Women-clothing",
         },
         {
           title: "Men's Clothing",
-          url: "#",
+          url: "/admin/Fashion/Men-clothing",
+         
         },
         {
           title: "Kids' Clothing",
-          url: "#",
+          url: "/admin/Fashion/Kids-clothing",
         },
         {
           title: "Accessories",
-          url: "#",
+          url: "/admin/Fashion/Accessories",
         },
         {
           title: "Footwear",
-          url: "#",
+          url: "/admin/Fashion/Footwear",
         },
         {
             title: "Bags & Luggage",
-            url: "#",
+            url: "/admin/Fashion/Bags",
           },
       ],
     },
