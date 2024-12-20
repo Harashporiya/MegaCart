@@ -124,3 +124,59 @@ enum StorageType {
   EMMC
   NVMe
 }
+
+model Groceries{
+  id    String  @id @default(uuid())
+  name String
+  category CategoryGroceries
+  weight  weightVegitablesAndFruites?
+  SaucesWeight SaucesWeight?
+  OilsAndVinegarsWeight OilsAndVinegarsWeight?
+  CannedFoodsWeight CannedFoodsWeight?
+  price  Float
+  description    String
+  image       String
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+
+
+enum CategoryGroceries {
+  Fresh_vegetables
+  Fresh_fruits
+  Canned_foods
+  Sauces
+  Oils_and_Vinegars
+}
+enum weightVegitablesAndFruites {
+  Gram_500
+  Gram_1000
+  Gram_1500
+  Gram_2000
+  Gram_2500
+  Gram_3000
+}
+enum SaucesWeight {
+  Gram_250
+  Gram_450
+  Gram_500
+  Gram_1000
+  Gram_1500
+  Gram_2000
+}
+enum OilsAndVinegarsWeight {
+  Ml_250
+  Ml_500
+  Ml_1000
+  Ml_1500
+  Ml_2000
+}
+enum CannedFoodsWeight {
+  GRAM_150   
+  GRAM_250   
+  GRAM_400   
+  GRAM_450   
+  GRAM_800   
+  GRAM_1000  
+  GRAM_1500  
+}
