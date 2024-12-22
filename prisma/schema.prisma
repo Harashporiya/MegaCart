@@ -14,34 +14,38 @@ datasource db {
 }
 
 model User{
-  id       String   @id @default(uuid())
-  name     String?
-  email    String   @unique
-  password String
+   id       String   @id @default(uuid())
+   name     String?
+   email    String   @unique
+   password String
+
+   @@map("users")
 }
 
+
 model Fashion {
-  id          String      @id @default(uuid())
-  name        String
-  brand       String
-  category    Category
-  accessorySize      AccessorySize?
-  footwearSize       FootwearSize?
-  bagSize            BagSize?
-  size        Size?
-  price       Float
-  description String
-  image       String
+   id          String      @id @default(uuid())
+   name        String
+   brand       String
+   category    Category
+   accessorySize      AccessorySize?
+   footwearSize       FootwearSize?
+   bagSize            BagSize?
+   size        Size?
+   price       Float
+   description String
+   image       String
  
+ @@map("fashions")
 }
 
 enum Category {
-  WomensClothing
-  MensClothing
-  KidsClothing
-  Accessories
-  Footwear
-  BagsAndLuggage
+   WomensClothing
+   MensClothing
+   KidsClothing
+   Accessories
+   Footwear
+   BagsAndLuggage
 }
 
 
@@ -104,6 +108,8 @@ model Electronic {
   weight         Float?              
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
+
+  @@map("electronics")
 }
 
 enum CategoryElectronic {
@@ -138,6 +144,8 @@ model Groceries{
   image       String
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
+
+  @@map("groceries")
 }
 
 
