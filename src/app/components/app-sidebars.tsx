@@ -143,11 +143,11 @@ const data = {
         },
         {
             title: "Laptops",
-            url: "#",
+            url: "/admin/Electronic/Laptops",
           },
           {
             title: "Tablets",
-            url: "#",
+            url: "/admin/Electronic/Tablets",
           },
           {
             title: "Headphones",
@@ -155,7 +155,7 @@ const data = {
           },
           {
             title: "Smart Watches",
-            url: "#",
+            url: "/admin/Electronic/SmartWatches",
           },
           {
             title: "Speakers",
@@ -166,8 +166,12 @@ const data = {
             url: "/admin/Electronic/Printers",
           },
           {
+            title: "Cameras",
+            url: "/admin/Electronic/Cameras",
+          },
+          {
             title: "GameConsoles",
-            url: "#",
+            url: "/admin/Electronic/GameConsoles",
           },
       ],
     },
