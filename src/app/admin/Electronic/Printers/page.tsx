@@ -19,7 +19,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 
 
-interface SpeakersItem {
+interface  PrintersItem {
   id: string;
   name: string;
   brand: string;
@@ -27,10 +27,13 @@ interface SpeakersItem {
   price: number;
   image: string;
   description: string;
+  color:string;
+  warranty:string;
+  stockQuantity:string;
 }
 
-export default function SpeakersPage() {
-  const [electronicItems, setElectronicItems] = useState<SpeakersItem[]>([]);
+export default function PrintersPage() {
+  const [electronicItems, setElectronicItems] = useState<PrintersItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,15 +43,15 @@ export default function SpeakersPage() {
         setLoading(true);
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/Electronic`);
 
-        const speakers = response.data.items.filter(
-          (item: SpeakersItem) => item.category === 'Printers'
+        const printers = response.data.items.filter(
+          (item: PrintersItem) => item.category === 'Printers'
         );
         //console.log(speakers)
-        setElectronicItems(speakers);
+        setElectronicItems(printers);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data", error);
-        setError("Failed to fetch speakers items");
+        setError("Failed to fetch printers items");
         setLoading(false);
       }
     };
@@ -89,7 +92,7 @@ export default function SpeakersPage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="#">Speakers</BreadcrumbLink>
+                  <BreadcrumbLink href="#">Printers</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
@@ -101,10 +104,10 @@ export default function SpeakersPage() {
         </header>
 
         <div className="p-6">
-          <h1 className="text-2xl font-bold mb-6">Speakers</h1>
+          <h1 className="text-2xl font-bold mb-6">Printers</h1>
 
           {electronicItems.length === 0 ? (
-            <p className="text-gray-500">No Speakers items found.</p>
+            <p className="text-gray-500">No Printers items found.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {electronicItems.map((item) => (
@@ -124,9 +127,11 @@ export default function SpeakersPage() {
                     <h2 className="text-xl font-semibold mb-2">{item.name}</h2>
                     <p className="text-gray-600 mb-2">{item.brand}</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-gray-900">₹{item.price}</span>
-                      {/* <span className="text-sm text-gray-500">Size: {item.accessorySize}</span> */}
+                      <span className="text-lg font-bold text-gray-900">&#8377; {item.price}</span>
+                      <span className="text-sm text-gray-500">Color: {item.color}</span>
                     </div>
+                    <span className="text-lg font-bold text-gray-900">Warranty: {item.warranty} month</span><br/>
+                    <span className="text-lg font-bold text-gray-900">Stock Quantity: {item.stockQuantity}</span>
                     <p className="text-sm text-gray-500 mt-2 line-clamp-2">{item.description}</p>
                   </div>
                 </div>
