@@ -26,12 +26,24 @@ const FashionItemSchema = z.object({
   stockQuantity: z.number().int().min(0, "Stock quantity must be non-negative"),
   isAvailable: z.boolean(),
   processorType: z.string().optional().nullable(),
-  ramSize: z.number().optional().nullable(),
+  ramSize: z.union([
+    z.number(),
+    z.string().transform((val) => parseInt(val, 10))
+  ]).optional().nullable(),
   storageType: z.enum(["SSD", "HDD", "EMMC", "NVMe"]).optional().nullable(),
-  storageCapacity: z.number().optional().nullable(),
+  storageCapacity: z.union([
+    z.number(),
+    z.string().transform((val) => parseInt(val, 10))
+  ]).optional().nullable(),
   displaySize: z.number().optional().nullable(),
-  batteryCapacity: z.number().optional().nullable(),
-  warranty: z.number().optional().nullable(),
+  batteryCapacity: z.union([
+    z.number(),
+    z.string().transform((val) => parseInt(val, 10))
+  ]).optional().nullable(),
+  warranty: z.union([
+    z.number(),
+    z.string().transform((val) => parseInt(val, 10))
+  ]).optional().nullable(),
   color: z.string().optional().nullable(),
   weight: z.number().optional().nullable(),
   price: z.string().transform(val => parseFloat(val)),
@@ -47,7 +59,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Image is required" }, { status: 400 });
     }
 
-    // Convert form data to an object that matches the schema
+   
     const dataToValidate = {
       name: formData.get('name') as string,
       brand: formData.get('brand') as string,
@@ -56,7 +68,7 @@ export async function POST(req: NextRequest) {
       stockQuantity: parseInt(formData.get('stockQuantity') as string),
       isAvailable: formData.get('isAvailable') === 'true',
       processorType: formData.get('processorType') as string | undefined,
-      ramSize: formData.get('ramSize'),
+      ramSize: formData.get('ramSize') as any,
       storageType: formData.get('storageType') as any,
       storageCapacity: formData.get('storageCapacity') ,
       displaySize: formData.get('displaySize') ,
@@ -92,7 +104,7 @@ export async function POST(req: NextRequest) {
     const newElectronicItem = await prisma.electronic.create({
       data: {
         ...validatedData,
-        image: [`/assets/${fileName}`], 
+        image: `/assets/${fileName}`, 
       },
     });
 
@@ -113,6 +125,29 @@ export async function POST(req: NextRequest) {
       { 
         message: "Internal Server Error"
      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    
+    const getElectronicData = await prisma.electronic.findMany({});
+    return NextResponse.json(
+      { 
+        message: "Electronic items retrieved successfully", 
+        items: getElectronicData,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error retrieving electronic items:", error);
+    return NextResponse.json(
+      { 
+        message: "Internal Server Error", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      },
       { status: 500 }
     );
   }
