@@ -134,12 +134,12 @@ const data = {
       ],
     },
     {
-      title: "Electronic",
-      url: "#",
+      title: "Electronic Add",
+      url: "/admin/Electronicform",
       items: [
         {
           title: "Smartphones ",
-          url: "#",
+          url: "/admin/Electronic/SmartPhones",
         },
         {
             title: "Laptops",
@@ -159,7 +159,7 @@ const data = {
           },
           {
             title: "Speakers",
-            url: "#",
+            url: "/admin/Electronic/Speakers",
           },
           {
             title: "Printers",
