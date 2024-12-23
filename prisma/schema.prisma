@@ -94,7 +94,7 @@ model Electronic {
   category       CategoryElectronic
   price          Float
   description    String
-  image          String[]
+  image          String
   stockQuantity  Int                @default(0)
   isAvailable    Boolean             @default(true)
   processorType  String?
