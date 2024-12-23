@@ -30,7 +30,7 @@ interface FashionItem {
   description: string;
 }
 
-export default function MensClothingPage() {
+export default function BagsPage() {
   const [fashionItems, setFashionItems] = useState<FashionItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
