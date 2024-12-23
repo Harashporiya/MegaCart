@@ -151,7 +151,7 @@ const data = {
           },
           {
             title: "Headphones",
-            url: "#",
+            url: "/admin/Electronic/HeadPhones",
           },
           {
             title: "Smart Watches",
@@ -163,7 +163,7 @@ const data = {
           },
           {
             title: "Printers",
-            url: "#",
+            url: "/admin/Electronic/Printers",
           },
           {
             title: "GameConsoles",
