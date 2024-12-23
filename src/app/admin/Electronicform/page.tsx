@@ -2,63 +2,129 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import "./Electronic.css"
-const Electronic: React.FC = () => {
+
+
+type CategoryElectronic = 
+  | "Smartphones"
+  | "Laptops"
+  | "Tablets"
+  | "Headphones"
+  | "SmartWatches"
+  | "Speakers"
+  | "Cameras"
+  | "Printers"
+  | "GameConsoles";
+
+type StorageType = "SSD" | "HDD" | "EMMC" | "NVMe";
+
+interface FormErrors {
+  [key: string]: string;
+}
+
+const Electronic = () => {
  
-  const [name, setName] = useState<string>('');
-  const [brand, setBrand] = useState<string>('');
-  const [model, setModel] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [stockQuantity, setStockQuantity] = useState<string>('0');
-  const [isAvailable, setIsAvailable] = useState<boolean>(true);
-  
-  
-  const [processorType, setProcessorType] = useState<string>('');
-  const [ramSize, setRamSize] = useState<string>('');
-  const [storageType, setStorageType] = useState<string>('');
-  const [storageCapacity, setStorageCapacity] = useState<string>('');
-  const [displaySize, setDisplaySize] = useState<string>('');
-  const [batteryCapacity, setBatteryCapacity] = useState<string>('');
-  const [warranty, setWarranty] = useState<string>('');
-  const [color, setColor] = useState<string>('');
-  const [weight, setWeight] = useState<string>('');
+  const [formData, setFormData] = useState({
+    name: '',
+    brand: '',
+    model: '',
+    category: '' as CategoryElectronic,
+    price: '',
+    description: '',
+    stockQuantity: '0',
+    isAvailable: true,
+    processorType: '',
+    ramSize: '',
+    storageType: '' as StorageType,
+    storageCapacity: '',
+    displaySize: '',
+    batteryCapacity: '',
+    warranty: '',
+    color: '',
+    weight: '',
+  });
+
   const [image, setImage] = useState<File | null>(null);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+ 
+  const validateForm = () => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.brand.trim()) newErrors.brand = "Brand is required";
+    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
+    if (!formData.color.trim()) newErrors.color = "Color is required";
+    
+    const price = parseFloat(formData.price);
+    if (isNaN(price) || price <= 0) newErrors.price = "Price must be a valid positive number";
+
+    const stockQuantity = parseInt(formData.stockQuantity);
+    if (isNaN(stockQuantity) || stockQuantity < 0) newErrors.stockQuantity = "Stock quantity must be a non-negative number";
+
+    if (!image) newErrors.image = "Image is required";
+
+    
+    if (formData.ramSize && isNaN(parseInt(formData.ramSize))) {
+      newErrors.ramSize = "RAM size must be a valid number";
+    }
+
+    if (formData.storageCapacity && isNaN(parseInt(formData.storageCapacity))) {
+      newErrors.storageCapacity = "Storage capacity must be a valid number";
+    }
+
+    if (formData.displaySize && isNaN(parseFloat(formData.displaySize))) {
+      newErrors.displaySize = "Display size must be a valid number";
+    }
+
+    if (formData.weight && isNaN(parseFloat(formData.weight))) {
+      newErrors.weight = "Weight must be a valid number";
+    }
+
+    if (formData.warranty && isNaN(parseFloat(formData.warranty))) {
+      newErrors.warranty = "Weight must be a valid number";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    
+    setFormData(prev => ({ ...prev, [name]: finalValue }));
+    
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('brand', brand);
-    formData.append('model', model);
-    formData.append('category', category);
-    formData.append('price', price);
-    formData.append('description', description);
-    formData.append('stockQuantity', stockQuantity);
-    formData.append('isAvailable', String(isAvailable));
+    if (!validateForm()) {
+      toast.error('Please correct the errors in the form');
+      return;
+    }
+
+    const formDataToSend = new FormData();
     
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== '') {
+        formDataToSend.append(key, value.toString());
+      }
+    });
+
    
-    if (processorType) formData.append('processorType', processorType);
-    if (ramSize) formData.append('ramSize', ramSize);
-    if (storageType) formData.append('storageType', storageType);
-    if (storageCapacity) formData.append('storageCapacity', storageCapacity);
-    if (displaySize) formData.append('displaySize', displaySize);
-    if (batteryCapacity) formData.append('batteryCapacity', batteryCapacity);
-    if (warranty) formData.append('warranty', warranty);
-    if (color) formData.append('color', color);
-    if (weight) formData.append('weight', weight);
-    
-    
     if (image) {
-        formData.append('image', image);
+      formDataToSend.append('image', image);
     }
 
     try {
       const response = await fetch('/api/Electronic', {
         method: 'POST',
-        body: formData
+        body: formDataToSend
       });
 
       const result = await response.json();
@@ -67,7 +133,8 @@ const Electronic: React.FC = () => {
         toast.success('Electronic item created successfully!');
         resetForm();
       } else {
-        toast.error(result.message || 'Error creating electronic item');
+        const errorMessage = result.errors?.[0]?.message || result.message || 'Error creating electronic item';
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -75,257 +142,295 @@ const Electronic: React.FC = () => {
     }
   };
 
-  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-        setImage(e.target.files[0]);
+      setImage(e.target.files[0]);
+      if (errors.image) {
+        setErrors(prev => ({ ...prev, image: '' }));
       }
+    }
   };
 
   const resetForm = () => {
-    setName('');
-    setBrand('');
-    setModel('');
-    setCategory('');
-    setPrice('');
-    setDescription('');
-    setStockQuantity('0');
-    setIsAvailable(true);
-    setProcessorType('');
-    setRamSize('');
-    setStorageType('');
-    setStorageCapacity('');
-    setDisplaySize('');
-    setBatteryCapacity('');
-    setWarranty('');
-    setColor('');
-    setWeight('');
+    setFormData({
+      name: '',
+      brand: '',
+      model: '',
+      category: '' as CategoryElectronic,
+      price: '',
+      description: '',
+      stockQuantity: '0',
+      isAvailable: true,
+      processorType: '',
+      ramSize: '',
+      storageType: '' as StorageType,
+      storageCapacity: '',
+      displaySize: '',
+      batteryCapacity: '',
+      warranty: '',
+      color: '',
+      weight: '',
+    });
     setImage(null);
+    setErrors({});
   };
 
   return (
-    <div className="electronic-form-container">
-      <form onSubmit={handleSubmit} className="electronic-form">
-        <h2>Add Electronic Item</h2>
+    <div className="max-w-2xl mx-auto p-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <h2 className="text-2xl font-bold mb-6">Add Electronic Item</h2>
         
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+      
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium">
+              Name *
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`mt-1 block w-full rounded-md border ${errors.name ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="brand" className="block text-sm font-medium">
+              Brand *
+            </label>
+            <input
+              type="text"
+              id="brand"
+              name="brand"
+              value={formData.brand}
+              onChange={handleChange}
+              className={`mt-1 block w-full rounded-md border ${errors.brand ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.brand && <p className="text-red-500 text-sm mt-1">{errors.brand}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium">
+              Category *
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={`mt-1 block w-full rounded-md border ${errors.category ? 'border-red-500' : 'border-gray-300'} p-2`}
+            >
+              <option value="">Select Category</option>
+              <option value="Smartphones">Smartphones</option>
+              <option value="Laptops">Laptops</option>
+              <option value="Tablets">Tablets</option>
+              <option value="Headphones">Headphones</option>
+              <option value="SmartWatches">Smart Watches</option>
+              <option value="Speakers">Speakers</option>
+              <option value="Cameras">Cameras</option>
+              <option value="Printers">Printers</option>
+              <option value="GameConsoles">Game Consoles</option>
+            </select>
+            {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
+          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="brand">Brand</label>
-          <input
-            type="text"
-            id="brand"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            required
-          />
+       
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium">
+              Price *
+            </label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              step="0.01"
+              min="0"
+              className={`mt-1 block w-full rounded-md border ${errors.price ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="stockQuantity" className="block text-sm font-medium">
+              Stock Quantity *
+            </label>
+            <input
+              type="number"
+              id="stockQuantity"
+              name="stockQuantity"
+              value={formData.stockQuantity}
+              onChange={handleChange}
+              min="0"
+              className={`mt-1 block w-full rounded-md border ${errors.stockQuantity ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.stockQuantity && <p className="text-red-500 text-sm mt-1">{errors.stockQuantity}</p>}
+          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="model">Model</label>
-          <input
-            type="text"
-            id="model"
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="color" className="block text-sm font-medium">
+              Color *
+            </label>
+            <input
+              type="text"
+              id="color"
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
+              step="0.01"
+              min="0"
+              className={`mt-1 block w-full rounded-md border ${errors.color ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.color && <p className="text-red-500 text-sm mt-1">{errors.color}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="warranty" className="block text-sm font-medium">
+            Warranty *
+            </label>
+            <input
+              type="number"
+              id="warranty"
+              name="warranty"
+              value={formData.warranty}
+              onChange={handleChange}
+              step="0.01"
+              min="0"
+              className={`mt-1 block w-full rounded-md border ${errors.warranty ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.warranty && <p className="text-red-500 text-sm mt-1">{errors.warranty}</p>}
+          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="category">Category</label>
-          <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          >
-            <option value="">Select Category</option>
-            <option value="Smartphones">Smartphones</option>
-            <option value="Laptops">Laptops</option>
-            <option value="Tablets">Tablets</option>
-            <option value="Headphones">Headphones</option>
-            <option value="SmartWatches">Smart Watches</option>
-            <option value="Speakers">Speakers</option>
-            <option value="Cameras">Cameras</option>
-            <option value="Printers">Printers</option>
-            <option value="GameConsoles">Game Consoles</option>
-          </select>
-        </div>
+     
+        {['Laptops', 'Tablets', 'Smartphones'].includes(formData.category) && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="processorType" className="block text-sm font-medium">
+                  Processor Type
+                </label>
+                <input
+                  type="text"
+                  id="processorType"
+                  name="processorType"
+                  value={formData.processorType}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 p-2"
+                />
+              </div>
 
-        <div className="form-group">
-          <label htmlFor="price">Price</label>
-          <input
-            type="text"
-            id="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            step="0.01"
-            min="0"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="stockQuantity">Stock Quantity</label>
-          <input
-            type="text"
-            id="stockQuantity"
-            value={stockQuantity}
-            onChange={(e) => setStockQuantity(e.target.value)}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="isAvailable">Available</label>
-          <input
-            type="checkbox"
-            id="isAvailable"
-            checked={isAvailable}
-            onChange={(e) => setIsAvailable(e.target.checked)}
-          />
-        </div>
-
-        {['Laptops', 'Tablets', 'Smartphones'].includes(category) && (
-          <>
-            <div className="form-group">
-              <label htmlFor="processorType">Processor Type</label>
-              <input
-                type="text"
-                id="processorType"
-                value={processorType}
-                onChange={(e) => setProcessorType(e.target.value)}
-              />
+              <div>
+                <label htmlFor="ramSize" className="block text-sm font-medium">
+                  RAM Size (GB)
+                </label>
+                <input
+                  type="number"
+                  id="ramSize"
+                  name="ramSize"
+                  value={formData.ramSize}
+                  onChange={handleChange}
+                  min="0"
+                  className={`mt-1 block w-full rounded-md border ${errors.ramSize ? 'border-red-500' : 'border-gray-300'} p-2`}
+                />
+                {errors.ramSize && <p className="text-red-500 text-sm mt-1">{errors.ramSize}</p>}
+              </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="ramSize">RAM (GB)</label>
-              <input
-                type="text"
-                id="ramSize"
-                value={ramSize}
-                onChange={(e) => setRamSize(e.target.value)}
-                min="0"
-              />
-            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="storageType" className="block text-sm font-medium">
+                  Storage Type
+                </label>
+                <select
+                  id="storageType"
+                  name="storageType"
+                  value={formData.storageType}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 p-2"
+                >
+                  <option value="">Select Storage Type</option>
+                  <option value="SSD">SSD</option>
+                  <option value="HDD">HDD</option>
+                  <option value="EMMC">EMMC</option>
+                  <option value="NVMe">NVMe</option>
+                </select>
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="storageType">Storage Type</label>
-              <select
-                id="storageType"
-                value={storageType}
-                onChange={(e) => setStorageType(e.target.value)}
-              >
-                <option value="">Select Storage Type</option>
-                <option value="SSD">SSD</option>
-                <option value="HDD">HDD</option>
-                <option value="EMMC">EMMC</option>
-                <option value="NVMe">NVMe</option>
-              </select>
+              <div>
+                <label htmlFor="storageCapacity" className="block text-sm font-medium">
+                  Storage Capacity (GB)
+                </label>
+                <input
+                  type="number"
+                  id="storageCapacity"
+                  name="storageCapacity"
+                  value={formData.storageCapacity}
+                  onChange={handleChange}
+                  min="0"
+                  className={`mt-1 block w-full rounded-md border ${errors.storageCapacity ? 'border-red-500' : 'border-gray-300'} p-2`}
+                />
+                {errors.storageCapacity && <p className="text-red-500 text-sm mt-1">{errors.storageCapacity}</p>}
+              </div>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="storageCapacity">Storage Capacity (GB)</label>
-              <input
-                type="text"
-                id="storageCapacity"
-                value={storageCapacity}
-                onChange={(e) => setStorageCapacity(e.target.value)}
-                min="0"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="displaySize">Display Size (inches)</label>
-              <input
-                type="text"
-                id="displaySize"
-                value={displaySize}
-                onChange={(e) => setDisplaySize(e.target.value)}
-                step="0.1"
-                min="0"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="batteryCapacity">Battery Capacity (mAh)</label>
-              <input
-                type="text"
-                id="batteryCapacity"
-                value={batteryCapacity}
-                onChange={(e) => setBatteryCapacity(e.target.value)}
-                min="0"
-              />
-            </div>
-          </>
+          </div>
         )}
 
-        <div className="form-group">
-          <label htmlFor="warranty">Warranty (months)</label>
-          <input
-            type="text"
-            id="warranty"
-            value={warranty}
-            onChange={(e) => setWarranty(e.target.value)}
-            min="0"
-          />
+     
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium">
+              Description *
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={4}
+              className={`mt-1 block w-full rounded-md border ${errors.description ? 'border-red-500' : 'border-gray-300'} p-2`}
+            />
+            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="image" className="block text-sm font-medium">
+              Image *
+            </label>
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              className={`mt-1 block w-full ${errors.image ? 'text-red-500' : ''}`}
+            />
+            {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
+          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="color">Color</label>
-          <input
-            type="text"
-            id="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
+        <div className="flex items-center justify-end space-x-4">
+          <button
+            type="button"
+            onClick={resetForm}
+            className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Reset
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+          >
+            Create Electronic Item
+          </button>
         </div>
-
-        <div className="form-group">
-          <label htmlFor="weight">Weight (kg)</label>
-          <input
-            type="text"
-            id="weight"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="images">Images</label>
-          <input
-            type="file"
-            id="images"
-            accept="image/*"
-            multiple
-            onChange={handleImagesChange}
-            required
-          />
-        </div>
-
-        <button type="submit" className="submit-btn">
-          Create Electronic Item
-        </button>
       </form>
 
       <ToastContainer />

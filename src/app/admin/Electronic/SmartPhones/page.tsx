@@ -129,7 +129,7 @@ export default function SmartPhonesPage() {
                     <h2 className="text-xl font-semibold mb-2">{item.name}</h2>
                     <p className="text-gray-600 mb-2">{item.brand}</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-gray-900">₹{item.price}</span>
+                      <span className="text-lg font-bold text-gray-900">&#8377; {item.price}</span>
                      
                       {/* <span className="text-sm text-gray-500">Size: {item.accessorySize}</span> */}
                     </div>
