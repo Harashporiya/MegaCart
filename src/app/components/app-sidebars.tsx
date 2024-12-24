@@ -25,23 +25,23 @@ const data = {
       items: [
         {
           title: "Fresh vegetables",
-          url: "#",
+          url: "/admin/Groceries/FreshVegetables",
         },
         {
           title: "Fresh fruits",
-          url: "#",
+          url: "/admin/Groceries/FreshFruites",
         },
         {
             title: "Canned foods",
-            url: "#",
+            url: "/admin/Groceries/CannedFoods",
           },
           {
             title: "Sauces",
-            url: "#",
+            url: "/admin/Groceries/Sauces",
           },
           {
             title: "Oils & Vinegars",
-            url: "#",
+            url: "/admin/Groceries/OilsAndVinegars",
           },
       ],
     },
