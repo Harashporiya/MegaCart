@@ -206,7 +206,7 @@ model PremiumFruits {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
-  @@map("premiumFruits")
+  @@map("premium")
 }
 
 enum categoryFruits {
