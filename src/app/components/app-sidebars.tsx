@@ -51,28 +51,28 @@ const data = {
       items: [
         {
           title: "Imported Plum",
-          url: "#",
+          url: "/admin/PremiumFruits/ImprotedPlum",
         },
         {
           title:"Dragon fruit",
-          url: "#",
+          url: "/admin/PremiumFruits/DragonFruits",
           isActive: true,
         },
         {
           title: "Apple",
-          url: "#",
+          url: "/admin/PremiumFruits/Apple",
         },
         {
           title: "Longan - imported",
-          url: "#",
+          url: "/admin/PremiumFruits/ImprotedLongan",
         },
         {
           title: "Green Kiwi",
-          url: "#",
+          url: "/admin/PremiumFruits/GreenKiwi",
         },
         {
           title: "Apple - Pink Lady",
-          url: "#",
+          url: "/admin/PremiumFruits/ApplePinkLady",
         },
       ],
     },
