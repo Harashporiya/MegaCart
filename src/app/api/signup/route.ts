@@ -4,13 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import zod from 'zod';
 
+
 const client = new PrismaClient();
 
 const secretKey = "uquqhsjdduddbdhihddkdndjedbfh";
 
 export async function POST(req: NextRequest,res:NextResponse) {
         const { name, email, password } = await req.json();
-
+     
         try {
            
             const existingUser = await client.user.findUnique({
