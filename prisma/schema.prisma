@@ -286,7 +286,7 @@ model HomeKitchen {
   name        String
   category    CategoryHomeKitchen
   capacity    Float?     
-  volumeUnit  VolumeUnit? 
+ // volumeUnit  VolumeUnit? 
   price       Float
   description String
   image       String
@@ -297,7 +297,6 @@ model HomeKitchen {
 }
 
 enum CategoryHomeKitchen {
-  HOME_AND_KITCHEN
   COOKWARE
   KITCHEN_APPLIANCES
   DINING_AND_SERVEWARE
@@ -305,10 +304,10 @@ enum CategoryHomeKitchen {
   CLEANING_SUPPLIES
 }
 
-enum VolumeUnit {
-  LITER
-  MILLILITER
-  GALLON
-  OUNCE
-  CUP
-}
+// enum VolumeUnit {
+//   LITER
+//   MILLILITER
+//   GALLON
+//   OUNCE
+//   CUP
+// }
