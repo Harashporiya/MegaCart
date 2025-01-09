@@ -10,18 +10,18 @@ const prisma = new PrismaClient();
 
 const HomeKitchenItemSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  category: z.enum([ "HOME_AND_KITCHEN",
+  category: z.enum([
     "COOKWARE",
     "KITCHEN_APPLIANCES",
     "DINING_AND_SERVEWARE",
     "HOME_DECOR",
     "CLEANING_SUPPLIES"]),
   capacity:z.string().transform(val=>parseFloat(val)).optional().nullable(),
-  volumeUnit:z.enum([ "LITER",
-    "MILLILITER",
-    "GALLON",
-    "OUNCE",
-    "CUP" ]).optional().nullable(),
+  // volumeUnit:z.enum([ "LITER",
+  //   "MILLILITER",
+  //   "GALLON",
+  //   "OUNCE",
+  //   "CUP" ]).optional().nullable(),
   price: z.string().transform(val => parseFloat(val)),
   description: z.string().min(1, "Description is required"),
 });
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   
     const name = formData.get('name') as string;
     const category = formData.get('category') as any;
-    const volumeUnit = formData.get('volumeUnit') as any;
+   // const volumeUnit = formData.get('volumeUnit') as any;
     const capacity = formData.get('capacity') as any;
     const price = formData.get('price') as string;
     const description = formData.get('description') as string;
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     const validatedData = HomeKitchenItemSchema.parse({
       name,
       category,
-      volumeUnit,
+    //  volumeUnit,
       capacity,
       price,
       description
