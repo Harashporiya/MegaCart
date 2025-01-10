@@ -78,15 +78,15 @@ const data = {
     },
     {
       title: "Home & Kitchen",
-      url: "#",
+      url: "/admin/HomeKitchenForm",
       items: [
         {
           title: "Cookware",
-          url: "#",
+          url: "/admin/HomeKitchen/Cookware",
         },
         {
           title: "Kitchen Appliances",
-          url: "#",
+          url: "/admin/HomeKitchen/KitchenAppliances",
         },
         {
           title: "Dining & Serveware",
