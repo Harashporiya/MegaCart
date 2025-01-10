@@ -287,6 +287,8 @@ model HomeKitchen {
   category    CategoryHomeKitchen
   capacity    Float?     
  // volumeUnit  VolumeUnit? 
+  color  String?
+  warranty  Float?
   price       Float
   description String
   image       String
