@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "home_kitchen" ALTER COLUMN "warranty" SET DATA TYPE DOUBLE PRECISION;
