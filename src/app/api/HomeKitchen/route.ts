@@ -22,6 +22,8 @@ const HomeKitchenItemSchema = z.object({
   //   "GALLON",
   //   "OUNCE",
   //   "CUP" ]).optional().nullable(),
+  color:z.string().optional().nullable(),
+  warranty: z.string().transform(val => parseFloat(val)).optional().nullable(),
   price: z.string().transform(val => parseFloat(val)),
   description: z.string().min(1, "Description is required"),
 });
@@ -36,6 +38,8 @@ export async function POST(req: NextRequest) {
     const category = formData.get('category') as any;
    // const volumeUnit = formData.get('volumeUnit') as any;
     const capacity = formData.get('capacity') as any;
+    const color = formData.get('color') as string;
+    const warranty = formData.get('warranty') as string;
     const price = formData.get('price') as string;
     const description = formData.get('description') as string;
 
@@ -51,6 +55,8 @@ export async function POST(req: NextRequest) {
       category,
     //  volumeUnit,
       capacity,
+      color,
+      warranty,
       price,
       description
     });
