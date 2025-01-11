@@ -1,5 +1,5 @@
 "use client"
-import { Category } from '@prisma/client';
+
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -68,7 +68,7 @@ const HomeKitchenForm = () => {
         setImage(null);
     };
 
-
+    //const showCapacityInput = category !== "KITCHEN_APPLIANCES" && category !== "HOME_DECOR";
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Add Home Kitchen</h2>
@@ -120,7 +120,7 @@ const HomeKitchenForm = () => {
                                     step="0.01"
                                     min="0"
                                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
-                                    //required
+                                //required
                                 />
                             </div>
 
@@ -133,13 +133,13 @@ const HomeKitchenForm = () => {
                                     value={color}
                                     onChange={(e) => setColor(e.target.value)}
                                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
-                                    //required
+                                //required
                                 />
                             </div>
                         </>
-                    ):(
+                    ) : (
                         <>
-                         <div className="space-y-2">
+                            {/* <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
                         Capacity
                     </label>
@@ -152,13 +152,27 @@ const HomeKitchenForm = () => {
                         className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
                         required
                     />
-                </div>
+                </div> */}
                         </>
                     )
                 }
                 {
                     category === 'COOKWARE' && (
                         <>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Capacity
+                                </label>
+                                <input
+                                    type="number"
+                                    value={capacity}
+                                    onChange={(e) => setCapacity(e.target.value)}
+                                    step="0.01"
+                                    min="0"
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+                                    required
+                                />
+                            </div>
                             <div className="space-y-2">
                                 <label className="block text-sm font-medium text-gray-700">
                                     Color
@@ -174,6 +188,74 @@ const HomeKitchenForm = () => {
                         </>
                     )
                 }
+
+                {
+                    category === "HOME_DECOR" ? (
+                        <>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Color
+                                </label>
+                                <input
+                                    type="text"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+                                    required
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+
+                        </>
+                    )
+                }
+                {
+                    category === "DINING_AND_SERVEWARE" ? (
+                        <>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Color
+                                </label>
+                                <input
+                                    type="text"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+                                    required
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+
+                        </>
+                    )
+                }
+                {
+                    category === "CLEANING_SUPPLIES" ? (
+                        <>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Color
+                                </label>
+                                <input
+                                    type="text"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+                                    required
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+
+                        </>
+                    )
+                }
+
 
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
