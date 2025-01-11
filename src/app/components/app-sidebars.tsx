@@ -90,15 +90,15 @@ const data = {
         },
         {
           title: "Dining & Serveware",
-          url: "#",
+          url: "/admin/HomeKitchen/DiningServeware",
         },
         {
           title: "Home Decor",
-          url: "#",
+          url: "/admin/HomeKitchen/HomeDeco",
         },
         {
           title: "Cleaning Supplies",
-          url: "#",
+          url: "/admin/HomeKitchen/CleaningSupplies",
         },
       ],
     },
