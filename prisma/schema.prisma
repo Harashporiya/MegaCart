@@ -313,3 +313,27 @@ enum CategoryHomeKitchen {
 //   OUNCE
 //   CUP
 // }
+
+model Beauty {
+ id       String  @id @default(uuid()) 
+ name   String
+ Brand  String
+ category    CategoryBeauty?
+ itemVolume String?
+ itemForm String?
+ price       Float
+ description String
+ image       String[]
+ createdAt   DateTime    @default(now())
+ updatedAt   DateTime    @updatedAt 
+
+ @@map("beauty")
+}
+enum CategoryBeauty {
+  Skincare
+  Makeup
+  Hair_Care
+  Fragrances
+ Personal_Care
+ Bath_Body
+}
