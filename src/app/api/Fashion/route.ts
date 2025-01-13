@@ -56,23 +56,23 @@ export async function POST(req: NextRequest) {
     });
 
    
-    const bytes = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
+    const bytes = await imageFile.arrayBuffer(); //Image file ka data byte array ke form mein read karta hai. await ensure karta hai ki pura data read hone ke baad agla step chale.
+    const buffer = Buffer.from(bytes); // Byte array ko Node.js ke binary Buffer format mein convert karta hai.
+   // Buffer format file ko write karne ke liye perfect hota hai.
    
-    const fileExtension = imageFile.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
-    const filePath = path.join(process.cwd(), "public/assets", fileName);
-
+    const fileExtension = imageFile.name.split('.').pop(); // File ke naam ko . ke basis par split karta hai (e.g., "photo.jpg" -> ["photo", "jpg"]). // Last part nikalta hai, jo extension hota hai (e.g., jpg, png).
+    const fileName = `${uuidv4()}.${fileExtension}`; // Ek unique ID generate karta hai. Unique ID ko extension ke saath combine karke ek unique file name banata hai (e.g., abcd1234.jpg).
+    const filePath = path.join(process.cwd(), "public/assets", fileName); // Current working directory (process.cwd()) ko "public/assets" aur fileName ke saath combine karta hai.
+    // File path banata hai jaha file save hogi (e.g., "public/assets/abcd1234.jpg").
     
-    const dirPath = path.dirname(filePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    const dirPath = path.dirname(filePath); // File path ka directory portion nikalta hai (e.g., public/assets).
+    if (!fs.existsSync(dirPath)) { // Check karta hai ki directory exist karti hai ya nahi.
+      fs.mkdirSync(dirPath, { recursive: true }); // Agar directory exist nahi karti, to recursive mode mein usko create karta hai. Recursive mode se missing parent directories bhi ban jaati hain.
     }
 
   
-    await writeFile(filePath, buffer);
-
+    await writeFile(filePath, buffer); // buffer data ko specified filePath par save karta hai.
+    // await ensures ki file write hone ke baad agla step chale.
    
     const newFashionItem = await prisma.fashion.create({
       data: {
