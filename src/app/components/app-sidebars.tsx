@@ -177,7 +177,7 @@ const data = {
     },
     {
         title: "Beauty",
-        url: "#",
+        url: "/admin/BeautyForm",
         items: [
           {
             title: "Skincare",
