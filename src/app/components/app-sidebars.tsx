@@ -181,27 +181,23 @@ const data = {
         items: [
           {
             title: "Skincare",
-            url: "#",
+            url: "/admin/Beauty/Skincare",
           },
           {
             title: "Makeup",
-            url: "#",
+            url: "/admin/Beauty/Makeup",
           },
           {
             title: "Hair Care",
-            url: "#",
+            url: "/admin/Beauty/HairCare",
           },
           {
             title: "Fragrances",
-            url: "#",
-          },
-          {
-            title: "Personal Care",
-            url: "#",
+            url: "/admin/Beauty/Fragrances",
           },
           {
               title: "Bath & Body",
-              url: "#",
+              url: "/admin/Beauty/BathAndBody",
             },
         ],
       },
