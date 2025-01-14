@@ -90,7 +90,6 @@ const Options: React.FC = () => {
         <p className='Item-beauty'>Makeup</p>
         <p className='Item-beauty'>Hair Care</p>
         <p className='Item-beauty'>Fragrances</p>
-        <p className='Item-beauty'>Personal Care</p>
         <p className='Item-beauty'>Bath & Body</p>
       </div>
     );
