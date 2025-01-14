@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
    // Yeh line ek folder ka path banata hai.
    // process.cwd(): Current working directory ka path leta hai.
   // path.join: Isko "public/assets" folder ke saath combine karta hai.
-    const uploadDir = path.join(process.cwd(), "public/assets");
+    const uploadDir = path.join(process.cwd(), "public/assets/beauty");
     // fs.existsSync: Yeh check karta hai ki folder exist karta hai ya nahi.
    // Agar folder nahi hai:
    //  fs.mkdirSync: Yeh folder banata hai.
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       const filePath = path.join(uploadDir, fileName); // Unique file name ko upload directory ke path ke saath combine karta hai.
 
       await writeFile(filePath, buffer); // File ke binary data ko disk par likhta hai. File ko disk par save karta hai public/assets folder mein.
-      images.push(`/assets/${fileName}`); // File ka relative path /assets/{fileName} ko images array mein add karta hai.
+      images.push(`/assets/beauty/${fileName}`); // File ka relative path /assets/{fileName} ko images array mein add karta hai.
     }
 
     const newBeautyItem = await prisma.beauty.create({
