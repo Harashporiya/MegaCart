@@ -16,13 +16,13 @@ const HomeKitchenItemSchema = z.object({
     "DINING_AND_SERVEWARE",
     "HOME_DECOR",
     "CLEANING_SUPPLIES"]),
-  capacity:z.string().transform(val=>parseFloat(val)).optional().nullable(),
+  capacity: z.string().transform(val => parseFloat(val)).optional().nullable(),
   // volumeUnit:z.enum([ "LITER",
   //   "MILLILITER",
   //   "GALLON",
   //   "OUNCE",
   //   "CUP" ]).optional().nullable(),
-  color:z.string().optional().nullable(),
+  color: z.string().optional().nullable(),
   warranty: z.string().transform(val => parseFloat(val)).optional().nullable(),
   price: z.string().transform(val => parseFloat(val)),
   description: z.string().min(1, "Description is required"),
@@ -30,30 +30,36 @@ const HomeKitchenItemSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-   
+
     const formData = await req.formData();
-    
-  
+
+
     const name = formData.get('name') as string;
     const category = formData.get('category') as any;
-   // const volumeUnit = formData.get('volumeUnit') as any;
+    // const volumeUnit = formData.get('volumeUnit') as any;
     const capacity = formData.get('capacity') as any;
     const color = formData.get('color') as string;
     const warranty = formData.get('warranty') as string;
     const price = formData.get('price') as string;
     const description = formData.get('description') as string;
 
-  
-    const imageFile = formData.get('image') as File;
-    if (!imageFile) {
-      return NextResponse.json({ message: "Image is required" }, { status: 400 });
+
+    const images: string[] = [];
+
+    const imageFiles = formData.getAll('images');
+
+    if (!imageFiles || imageFiles.length === 0) {
+      return NextResponse.json(
+        { message: "At least one image is required" },
+        { status: 400 }
+      );
     }
 
-   
+
     const validatedData = HomeKitchenItemSchema.parse({
       name,
       category,
-    //  volumeUnit,
+      //  volumeUnit,
       capacity,
       color,
       warranty,
@@ -61,29 +67,31 @@ export async function POST(req: NextRequest) {
       description
     });
 
-   
-    const bytes = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
 
-   
-    const fileExtension = imageFile.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
-    const filePath = path.join(process.cwd(), "public/assets", fileName);
+    const uploadDir = path.join(process.cwd(), "public/asstes/HomeKitchen")
 
-    
-    const dirPath = path.dirname(filePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true })
     }
 
-  
-    await writeFile(filePath, buffer);
+    for (const imageFile of imageFiles) {
+      const file = imageFile as File;
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
 
-   
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `${uuidv4()}.${fileExtension}`;
+      const filePath = path.join(uploadDir, fileName);
+
+      await writeFile(filePath, buffer);
+      images.push(`/assets/HomeKitchen/${fileName}`);
+    }
+
+
     const newHomeKitchenItem = await prisma.homeKitchen.create({
       data: {
         ...validatedData,
-        image: `/assets/${fileName}`,
+        image: images,
       },
     });
 
@@ -107,11 +115,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    
+
     const getHomeKitchenData = await prisma.homeKitchen.findMany({});
     return NextResponse.json(
-      { 
-        message: "Home Kitchen items retrieved successfully", 
+      {
+        message: "Home Kitchen items retrieved successfully",
         items: getHomeKitchenData,
       },
       { status: 200 }
@@ -119,9 +127,9 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error retrieving hoem kitchen items:", error);
     return NextResponse.json(
-      { 
-        message: "Internal Server Error", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error"
       },
       { status: 500 }
     );

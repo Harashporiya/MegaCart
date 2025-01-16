@@ -36,13 +36,15 @@ export async function POST(req: NextRequest) {
     const price = formData.get('price') as string;
     const description = formData.get('description') as string;
 
-  
-    const imageFile = formData.get('image') as File;
-    if (!imageFile) {
-      return NextResponse.json({ message: "Image is required" }, { status: 400 });
-    }
+    const images: string[] = [];
+    const imageFiles = formData.getAll('images');
 
-   
+    if (!imageFiles || imageFiles.length === 0) {
+      return NextResponse.json(
+        { message: "At least one image is required" }, 
+        { status: 400 }
+      );
+    }
     const validatedData = FashionItemSchema.parse({
       name,
       brand,
@@ -56,28 +58,47 @@ export async function POST(req: NextRequest) {
     });
 
    
-    const bytes = await imageFile.arrayBuffer(); //Image file ka data byte array ke form mein read karta hai. await ensure karta hai ki pura data read hone ke baad agla step chale.
-    const buffer = Buffer.from(bytes); // Byte array ko Node.js ke binary Buffer format mein convert karta hai.
-   // Buffer format file ko write karne ke liye perfect hota hai.
+  //   const bytes = await imageFile.arrayBuffer(); //Image file ka data byte array ke form mein read karta hai. await ensure karta hai ki pura data read hone ke baad agla step chale.
+  //   const buffer = Buffer.from(bytes); // Byte array ko Node.js ke binary Buffer format mein convert karta hai.
+  //  // Buffer format file ko write karne ke liye perfect hota hai.
    
-    const fileExtension = imageFile.name.split('.').pop(); // File ke naam ko . ke basis par split karta hai (e.g., "photo.jpg" -> ["photo", "jpg"]). // Last part nikalta hai, jo extension hota hai (e.g., jpg, png).
-    const fileName = `${uuidv4()}.${fileExtension}`; // Ek unique ID generate karta hai. Unique ID ko extension ke saath combine karke ek unique file name banata hai (e.g., abcd1234.jpg).
-    const filePath = path.join(process.cwd(), "public/assets", fileName); // Current working directory (process.cwd()) ko "public/assets" aur fileName ke saath combine karta hai.
-    // File path banata hai jaha file save hogi (e.g., "public/assets/abcd1234.jpg").
+  //   const fileExtension = imageFile.name.split('.').pop(); // File ke naam ko . ke basis par split karta hai (e.g., "photo.jpg" -> ["photo", "jpg"]). // Last part nikalta hai, jo extension hota hai (e.g., jpg, png).
+  //   const fileName = `${uuidv4()}.${fileExtension}`; // Ek unique ID generate karta hai. Unique ID ko extension ke saath combine karke ek unique file name banata hai (e.g., abcd1234.jpg).
+  //   const filePath = path.join(process.cwd(), "public/assets", fileName); // Current working directory (process.cwd()) ko "public/assets" aur fileName ke saath combine karta hai.
+  //   // File path banata hai jaha file save hogi (e.g., "public/assets/abcd1234.jpg").
     
-    const dirPath = path.dirname(filePath); // File path ka directory portion nikalta hai (e.g., public/assets).
-    if (!fs.existsSync(dirPath)) { // Check karta hai ki directory exist karti hai ya nahi.
-      fs.mkdirSync(dirPath, { recursive: true }); // Agar directory exist nahi karti, to recursive mode mein usko create karta hai. Recursive mode se missing parent directories bhi ban jaati hain.
-    }
+  //   const dirPath = path.dirname(filePath); // File path ka directory portion nikalta hai (e.g., public/assets).
+  //   if (!fs.existsSync(dirPath)) { // Check karta hai ki directory exist karti hai ya nahi.
+  //     fs.mkdirSync(dirPath, { recursive: true }); // Agar directory exist nahi karti, to recursive mode mein usko create karta hai. Recursive mode se missing parent directories bhi ban jaati hain.
+  //   }
 
   
-    await writeFile(filePath, buffer); // buffer data ko specified filePath par save karta hai.
-    // await ensures ki file write hone ke baad agla step chale.
+  //   await writeFile(filePath, buffer); // buffer data ko specified filePath par save karta hai.
+  //   // await ensures ki file write hone ke baad agla step chale.
+
+  const uploadDir = path.join(process.cwd(),"public/assets/Fashion")
+
+  if(!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir,{recursive:true})
+  }
+
+  for(const imageFile of imageFiles){
+    const file = imageFile as File;
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg'; 
+    const fileName = `${uuidv4()}.${fileExtension}`;
+    const filePath = path.join(uploadDir, fileName);
+
+    await writeFile(filePath, buffer); 
+    images.push(`/assets/Fashion/${fileName}`);
+  }
    
     const newFashionItem = await prisma.fashion.create({
       data: {
         ...validatedData,
-        image: `/assets/${fileName}`,
+        image:images,
       },
     });
 

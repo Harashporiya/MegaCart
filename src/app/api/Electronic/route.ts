@@ -14,12 +14,12 @@ const FashionItemSchema = z.object({
   model: z.string().optional().nullable(),
   category: z.enum([
     "Smartphones",
-    "Laptops", 
+    "Laptops",
     "Tablets",
     "Headphones",
-    "SmartWatches", 
+    "SmartWatches",
     "Speakers",
-    "Cameras", 
+    "Cameras",
     "Printers",
     "GameConsoles"
   ]),
@@ -53,13 +53,18 @@ const FashionItemSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
+    const images: string[] = [];
 
-    const imageFile = formData.get('image') as File;
-    if (!imageFile) {
-      return NextResponse.json({ message: "Image is required" }, { status: 400 });
+    const imageFiles = formData.getAll('images');
+
+    if (!imageFiles || imageFiles.length === 0) {
+      return NextResponse.json(
+        { message: "At least one image is required" },
+        { status: 400 }
+      );
     }
 
-   
+
     const dataToValidate = {
       name: formData.get('name') as string,
       brand: formData.get('brand') as string,
@@ -70,8 +75,8 @@ export async function POST(req: NextRequest) {
       processorType: formData.get('processorType') as string | undefined,
       ramSize: formData.get('ramSize') as any,
       storageType: formData.get('storageType') as any,
-      storageCapacity: formData.get('storageCapacity') ,
-      displaySize: formData.get('displaySize') ,
+      storageCapacity: formData.get('storageCapacity'),
+      displaySize: formData.get('displaySize'),
       batteryCapacity: formData.get('batteryCapacity'),
       warranty: formData.get('warranty'),
       color: formData.get('color') as string | undefined,
@@ -80,31 +85,34 @@ export async function POST(req: NextRequest) {
       description: formData.get('description') as string,
     };
 
-    
+
     const validatedData = FashionItemSchema.parse(dataToValidate);
 
-   
-    const bytes = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
 
-    const fileExtension = imageFile.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
-    const filePath = path.join(process.cwd(), "public/assets", fileName);
+    const uploadDir = path.join(process.cwd(), "public/asstes/Electronic")
 
-   
-    const dirPath = path.dirname(filePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true })
     }
 
- 
-    await writeFile(filePath, buffer);
+    for (const imageFile of imageFiles) {
+      const file = imageFile as File;
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
 
-   
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `${uuidv4()}.${fileExtension}`;
+      const filePath = path.join(uploadDir, fileName);
+
+      await writeFile(filePath, buffer);
+      images.push(`/assets/Electronic/${fileName}`);
+    }
+
+
     const newElectronicItem = await prisma.electronic.create({
       data: {
         ...validatedData,
-        image: `/assets/${fileName}`, 
+        image: images,
       },
     });
 
@@ -115,16 +123,16 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { message: "Validation Error", errors: error.errors }, 
+        { message: "Validation Error", errors: error.errors },
         { status: 400 }
       );
     }
 
     console.error("Error creating electronic item:", error);
     return NextResponse.json(
-      { 
+      {
         message: "Internal Server Error"
-     },
+      },
       { status: 500 }
     );
   }
@@ -132,11 +140,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    
+
     const getElectronicData = await prisma.electronic.findMany({});
     return NextResponse.json(
-      { 
-        message: "Electronic items retrieved successfully", 
+      {
+        message: "Electronic items retrieved successfully",
         items: getElectronicData,
       },
       { status: 200 }
@@ -144,9 +152,9 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error retrieving electronic items:", error);
     return NextResponse.json(
-      { 
-        message: "Internal Server Error", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error"
       },
       { status: 500 }
     );

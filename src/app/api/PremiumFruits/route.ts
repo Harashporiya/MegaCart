@@ -62,9 +62,15 @@ export async function POST(req: NextRequest) {
         const description = formData.get('description') as string;
 
 
-        const imageFile = formData.get('image') as File;
-        if (!imageFile) {
-            return NextResponse.json({ message: "Image is required" }, { status: 400 });
+        const images: string[] = [];
+
+        const imageFiles = formData.getAll('images');
+    
+        if (!imageFiles || imageFiles.length === 0) {
+          return NextResponse.json(
+            { message: "At least one image is required" },
+            { status: 400 }
+          );
         }
 
 
@@ -82,28 +88,30 @@ export async function POST(req: NextRequest) {
         });
 
 
-        const bytes = await imageFile.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-
-        const fileExtension = imageFile.name.split('.').pop();
-        const fileName = `${uuidv4()}.${fileExtension}`;
-        const filePath = path.join(process.cwd(), "public/assets", fileName);
-
-
-        const dirPath = path.dirname(filePath);
-        if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath, { recursive: true });
-        }
-
-
-        await writeFile(filePath, buffer);
+       const uploadDir = path.join(process.cwd(), "public/asstes/PremiumFruits")
+       
+           if (!fs.existsSync(uploadDir)) {
+             fs.mkdirSync(uploadDir, { recursive: true })
+           }
+       
+           for (const imageFile of imageFiles) {
+             const file = imageFile as File;
+             const bytes = await file.arrayBuffer();
+             const buffer = Buffer.from(bytes);
+       
+             const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+             const fileName = `${uuidv4()}.${fileExtension}`;
+             const filePath = path.join(uploadDir, fileName);
+       
+             await writeFile(filePath, buffer);
+             images.push(`/assets/PremiumFruits/${fileName}`);
+           }
 
 
         const newPremiumItem = await prisma.premiumFruits.create({
             data: {
                 ...validatedData,
-                image: `/assets/${fileName}`,
+                image: images,
             },
         });
 
