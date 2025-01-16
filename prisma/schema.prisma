@@ -34,7 +34,7 @@ model Fashion {
   size          Size?
   price         Float
   description   String
-  image         String
+  image         String[]
 
   @@map("fashions")
 }
@@ -95,7 +95,7 @@ model Electronic {
   category        CategoryElectronic
   price           Float
   description     String
-  image           String
+  image           String[]
   stockQuantity   Int                @default(0)
   isAvailable     Boolean            @default(true)
   processorType   String?
@@ -144,7 +144,7 @@ model Groceries {
   CannedFoodsWeight     CannedFoodsWeight?
   price                 Float
   description           String
-  image                 String
+  image                 String[]
   createdAt             DateTime                    @default(now())
   updatedAt             DateTime                    @updatedAt
 
@@ -209,7 +209,7 @@ model PremiumFruits {
   ApplePinkLady  ApplePinkLady?
   price          Float
   description    String
-  image          String
+  image          String[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -291,7 +291,7 @@ model HomeKitchen {
   warranty  Float?
   price       Float
   description String
-  image       String
+  image       String[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
