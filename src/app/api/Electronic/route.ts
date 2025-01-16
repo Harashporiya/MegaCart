@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     const validatedData = FashionItemSchema.parse(dataToValidate);
 
 
-    const uploadDir = path.join(process.cwd(), "public/asstes/Electronic")
+    const uploadDir = path.join(process.cwd(), "public/assets/Electronic")
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true })

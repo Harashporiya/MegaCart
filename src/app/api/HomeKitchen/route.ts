@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     });
 
 
-    const uploadDir = path.join(process.cwd(), "public/asstes/HomeKitchen")
+    const uploadDir = path.join(process.cwd(), "public/assets/HomeKitchen")
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true })
