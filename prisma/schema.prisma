@@ -336,3 +336,37 @@ enum CategoryBeauty {
   Fragrances
   Bath_Body
 }
+
+model HomeImprovement{
+ id           String @id @default(uuid())
+ name         String
+ brand        String?
+ category     CategoryHomeImprovement
+ color        String?
+ numberOfItem String?
+ material     String?
+ headStyle    String?
+ roomType     String?
+ itemVolume   String?
+ itemForm     String?
+ size         String?
+ finishType   String?
+ capacity     String?
+ coolingPower String?
+ product      String?
+ price        Float
+ description  String
+ image        String[]
+ createdAt    DateTime    @default(now())
+ updatedAt    DateTime    @updatedAt 
+
+ @@map("homeImprovement")
+}
+
+enum CategoryHomeImprovement {  
+  Tools
+  Lighting
+  PaintAndSupplies
+  BathroomAndFixtures
+  HeatingAndCooling
+}
