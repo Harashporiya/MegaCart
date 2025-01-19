@@ -4,7 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Fashion.css'
 const Fashion: React.FC = () => {
-  
+
   const [name, setName] = useState<string>('');
   const [brand, setBrand] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -14,30 +14,46 @@ const Fashion: React.FC = () => {
   const [size, setSize] = useState<string>('');
   const [price, setPrice] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
+      const validFiles = selectedFiles.filter(file => file.type.startsWith('image/'));
 
-  
+      if (validFiles.length !== selectedFiles.length) {
+        toast.error('Some files were not images and were excluded');
+      }
+      setImages(prevImages => [...prevImages, ...validFiles]);
+    }
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (images.length === 0) {
+      toast.error('Please select at least one image');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('brand', brand);
     formData.append('category', category);
-    
-    
+
+
     if (accessorySize) formData.append('accessorySize', accessorySize);
     if (footwearSize) formData.append('footwearSize', footwearSize);
     if (bagSize) formData.append('bagSize', bagSize);
     if (size) formData.append('size', size);
-    
+
     formData.append('price', price);
     formData.append('description', description);
-    
-   
-    if (image) {
-      formData.append('image', image);
-    }
+
+
+    images.forEach((image, index) => {
+      formData.append('images', image);
+    });
 
     try {
       const response = await fetch('/api/Fashion', {
@@ -59,13 +75,9 @@ const Fashion: React.FC = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
 
- 
+
+
   const resetForm = () => {
     setName('');
     setBrand('');
@@ -76,15 +88,15 @@ const Fashion: React.FC = () => {
     setSize('');
     setPrice('');
     setDescription('');
-    setImage(null);
+    setImages([]);
   };
 
   return (
     <div className="fashion-form-container">
       <form onSubmit={handleSubmit} className="fashion-form">
         <h2>Add Fashion Item</h2>
-        
-       
+
+
         <div className="form-group">
           <label htmlFor="name">Name</label>
           <input
@@ -96,7 +108,7 @@ const Fashion: React.FC = () => {
           />
         </div>
 
-       
+
         <div className="form-group">
           <label htmlFor="brand">Brand</label>
           <input
@@ -108,7 +120,7 @@ const Fashion: React.FC = () => {
           />
         </div>
 
-       
+
         <div className="form-group">
           <label htmlFor="category">Category</label>
           <select
@@ -127,7 +139,7 @@ const Fashion: React.FC = () => {
           </select>
         </div>
 
-       
+
         {category === 'Accessories' && (
           <div className="form-group">
             <label htmlFor="accessorySize">Accessory Size</label>
@@ -203,7 +215,7 @@ const Fashion: React.FC = () => {
             </select>
           </div>
         )}
-      
+
         <div className="form-group">
           <label htmlFor="price">Price</label>
           <input
@@ -227,15 +239,22 @@ const Fashion: React.FC = () => {
           />
         </div>
 
+       
         <div className="form-group">
-          <label htmlFor="image">Image</label>
+          <label htmlFor="image">
+            Images
+          </label>
           <input
             type="file"
-            id="image"
             accept="image/*"
+            id="image"
+            multiple
             onChange={handleImageChange}
-            required
+           
           />
+        </div>
+        <div className="text-sm text-gray-600">
+          Selected Images: {images.length}
         </div>
         <button type="submit" className="submit-btn">
           Create Fashion Item
