@@ -13,10 +13,26 @@ const HomeKitchenForm = () => {
     const [warranty, setWarranty] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState<File[]>([]);
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const selectedFiles = Array.from(e.target.files);
+            const validFiles = selectedFiles.filter(file => file.type.startsWith('image/'));
+
+            if (validFiles.length !== selectedFiles.length) {
+                toast.error('Some files were not images and were excluded');
+            }
+            setImages(prevImages => [...prevImages, ...validFiles]);
+        }
+    };
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
+
+        if (images.length === 0) {
+            toast.error('Please select at least one image');
+            return;
+        }
 
         const formData = new FormData();
         formData.append('name', name);
@@ -27,9 +43,9 @@ const HomeKitchenForm = () => {
         formData.append('color', color);
         formData.append('warranty', warranty);
 
-        if (image) {
-            formData.append('image', image);
-        }
+        images.forEach((image, index) => {
+            formData.append('images', image);
+        });
 
         try {
             const response = await fetch('/api/HomeKitchen', {
@@ -51,11 +67,6 @@ const HomeKitchenForm = () => {
         }
     };
 
-    const handleImageChange = (e: any) => {
-        if (e.target.files && e.target.files[0]) {
-            setImage(e.target.files[0]);
-        }
-    };
 
     const resetForm = () => {
         setName('');
@@ -65,7 +76,7 @@ const HomeKitchenForm = () => {
         setWarranty('');
         setPrice('');
         setDescription('');
-        setImage(null);
+        setImages([]);
     };
 
     //const showCapacityInput = category !== "KITCHEN_APPLIANCES" && category !== "HOME_DECOR";
@@ -286,15 +297,18 @@ const HomeKitchenForm = () => {
 
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
-                        Image
+                        Images
                     </label>
                     <input
                         type="file"
                         accept="image/*"
+                        multiple
                         onChange={handleImageChange}
                         className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
-                        required
                     />
+                </div>
+                <div className="text-sm text-gray-600">
+                    Selected Images: {images.length}
                 </div>
 
                 <button
