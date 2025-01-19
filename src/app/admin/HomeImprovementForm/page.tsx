@@ -204,11 +204,10 @@ const HomeImprovementForm = () => {
                                     Capacity
                                 </label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     value={capacity}
                                     onChange={(e) => setCapacity(e.target.value)}
-                                    step="0.01"
-                                    min="0"
+                                   
                                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
                                     required
                                 />
@@ -245,13 +244,12 @@ const HomeImprovementForm = () => {
                                     Product
                                 </label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     value={product}
                                     onChange={(e) => setProduct(e.target.value)}
-                                    step="0.01"
-                                    min="0"
+                                  
                                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
-                                    required
+                                    
                                 />
                             </div>
                         </>
