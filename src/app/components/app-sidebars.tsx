@@ -207,27 +207,23 @@ const data = {
         items: [
           {
             title: "Tools",
-            url: "#",
+            url: "/admin/HomeImprovements/Tool",
           },
           {
             title: "Lighting",
-            url: "#",
-          },
-          {
-            title: "Hardware",
-            url: "#",
+            url: "/admin/HomeImprovements/Lighting",
           },
           {
             title: "Paint & Supplies",
-            url: "#",
+            url: "/admin/HomeImprovements/PaintAndSupplies",
           },
           {
             title: "Bathroom Fixtures",
-            url: "#",
+            url: "/admin/HomeImprovements/BathroomFixtures",
           },
           {
               title: "Heating & Cooling",
-              url: "#",
+              url: "/admin/HomeImprovements/HeatingAndCooling",
             },
         ],
       },
