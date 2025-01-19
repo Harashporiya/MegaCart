@@ -43,7 +43,6 @@ const Electronic = () => {
     weight: '',
   });
 
-  const [image, setImage] = useState<File | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
 
  
@@ -62,7 +61,7 @@ const Electronic = () => {
     const stockQuantity = parseInt(formData.stockQuantity);
     if (isNaN(stockQuantity) || stockQuantity < 0) newErrors.stockQuantity = "Stock quantity must be a non-negative number";
 
-    if (!image) newErrors.image = "Image is required";
+
 
     
     if (formData.ramSize && isNaN(parseInt(formData.ramSize))) {
@@ -89,6 +88,19 @@ const Electronic = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+   const [images, setImages] = useState<File[]>([]);
+      const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          if (e.target.files) {
+              const selectedFiles = Array.from(e.target.files);
+              const validFiles = selectedFiles.filter(file => file.type.startsWith('image/'));
+              
+              if (validFiles.length !== selectedFiles.length) {
+                  toast.error('Some files were not images and were excluded');
+              }
+              setImages(prevImages => [...prevImages, ...validFiles]);
+          }
+      };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
@@ -102,6 +114,14 @@ const Electronic = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+     if (images.length === 0) {
+                toast.error('Please select at least one image');
+                return;
+            }
+
+    
+         
     
     if (!validateForm()) {
       toast.error('Please correct the errors in the form');
@@ -117,10 +137,7 @@ const Electronic = () => {
     });
 
    
-    if (image) {
-      formDataToSend.append('image', image);
-    }
-
+  
     try {
       const response = await fetch('/api/Electronic', {
         method: 'POST',
@@ -142,14 +159,6 @@ const Electronic = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-      if (errors.image) {
-        setErrors(prev => ({ ...prev, image: '' }));
-      }
-    }
-  };
 
   const resetForm = () => {
     setFormData({
@@ -171,7 +180,7 @@ const Electronic = () => {
       color: '',
       weight: '',
     });
-    setImage(null);
+    setImages([]);
     setErrors({});
   };
 
