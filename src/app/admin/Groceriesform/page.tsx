@@ -9,16 +9,27 @@ const Groceries = () => {
   const [weight, setWeight] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
+      const validFiles = selectedFiles.filter(file => file.type.startsWith('image/'));
+
+      if (validFiles.length !== selectedFiles.length) {
+        toast.error('Some files were not images and were excluded');
+      }
+      setImages(prevImages => [...prevImages, ...validFiles]);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('category', category);
-    
-   
+
+
     if (['Fresh_vegetables', 'Fresh_fruits'].includes(category)) {
       formData.append('weight', weight);
     } else if (category === 'Sauces') {
@@ -28,13 +39,18 @@ const Groceries = () => {
     } else if (category === 'Canned_foods') {
       formData.append('CannedFoodsWeight', weight);
     }
-    
+
     formData.append('price', price);
     formData.append('description', description);
-    
-    if (image) {
-      formData.append('image', image);
+
+    if (images.length === 0) {
+      toast.error('Please select at least one image');
+      return;
     }
+
+    images.forEach((image, index) => {
+      formData.append('images', image);
+    });
 
     try {
       const response = await fetch('/api/Groceries', {
@@ -56,19 +72,13 @@ const Groceries = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
-
   const resetForm = () => {
     setName('');
     setWeight('');
     setCategory('');
     setPrice('');
     setDescription('');
-    setImage(null);
+    setImages([]);
   };
 
   const renderWeightOptions = () => {
@@ -131,7 +141,7 @@ const Groceries = () => {
     <div className="max-w-2xl mx-auto p-6 bg-gray-50 rounded-lg shadow-md">
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Add Grocery Item</h2>
-        
+
         <div className="space-y-2">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Name
@@ -213,17 +223,19 @@ const Groceries = () => {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-            Image
+          <label className="block text-sm font-medium text-gray-700">
+            Images
           </label>
           <input
             type="file"
-            id="image"
             accept="image/*"
+            multiple
             onChange={handleImageChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            required
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
           />
+        </div>
+        <div className="text-sm text-gray-600">
+          Selected Images: {images.length}
         </div>
 
         <button
