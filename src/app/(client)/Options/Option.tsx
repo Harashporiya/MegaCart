@@ -100,7 +100,7 @@ const Options: React.FC = () => {
       <div className="menu-item-content">
         <p className='Item-home-improvement'>Tools</p>
         <p className='Item-home-improvement'>Lighting</p>
-        <p className='Item-home-improvement'>Hardware</p>
+        {/* <p className='Item-home-improvement'>Hardware</p> */}
         <p className='Item-home-improvement'>Paint & Supplies</p>
         <p className='Item-home-improvement'>Bathroom Fixtures</p>
         <p className='Item-home-improvement'>Heating & Cooling</p>
