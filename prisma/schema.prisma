@@ -370,3 +370,31 @@ enum CategoryHomeImprovement {
   BathroomAndFixtures
   HeatingAndCooling
 }
+
+model SportsToysLuggage{
+  id   String @id @default(uuid())
+  name String
+  brand String
+  category     CategorySportsToysLuggage
+  maxiumWeight String?
+  itemWeight   String?
+  color        String?
+  material     String?
+  price        Float
+  description  String
+ image        String[]
+ createdAt    DateTime    @default(now())
+ updatedAt    DateTime    @updatedAt 
+
+ @@map("sportsToysLuggage")
+
+}
+
+enum CategorySportsToysLuggage {
+  OutdoorSports
+  IndoorGames
+  FitnessEquipment
+  ToysAndCollectibles
+  Luggage
+  TravelAndAccessories
+}
